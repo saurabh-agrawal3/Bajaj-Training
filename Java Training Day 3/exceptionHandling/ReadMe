@@ -1,0 +1,2 @@
+In this module, we learnt how to use keywords throw, throws. We learnt how to create own user defined exceptions and how to use them using throws. We also learnt to catch exceptions using try and catch keywords.
+In this package I have uploaded classes that demonstrate the use of handling exceptions.
