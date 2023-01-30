@@ -1,0 +1,216 @@
+Last login: Fri Jan 13 15:11:29 on ttys000
+
+The default interactive shell is now zsh.
+To update your account to use zsh, please run `chsh -s /bin/zsh`.
+For more details, please visit https://support.apple.com/kb/HT208050.
+L-WF47KN2LRQ:~ saurabhagrawal3$ /Library/PostgreSQL/15/scripts/runpsql.sh; exit
+Server [localhost]: 
+Database [postgres]: 
+Port [5432]: 
+Username [postgres]: 
+Password for user postgres: 
+psql (15.1)
+Type "help" for help.
+
+postgres=# \c db1;
+You are now connected to database "db1" as user "postgres".
+db1=# insert into employee values(2000120,'shivam agrawal',1280000),(2000110,'pratyush sinha',1280000);
+INSERT 0 2
+db1=# select * from employee;
+  empid  |    empname     |  salary  
+---------+----------------+----------
+ 2000140 | SAURAV AGRAWAL | 1.28e+06
+ 2000120 | shivam agrawal | 1.28e+06
+ 2000110 | pratyush sinha | 1.28e+06
+(3 rows)
+
+db1=# select concat (empid,empname) from employee;
+        concat         
+-----------------------
+ 2000140SAURAV AGRAWAL
+ 2000120shivam agrawal
+ 2000110pratyush sinha
+(3 rows)
+
+db1=# select upper empname from employee;
+ERROR:  column "upper" does not exist
+LINE 1: select upper empname from employee;
+               ^
+db1=# select upper (empname) from employee;
+     upper      
+----------------
+ SAURAV AGRAWAL
+ SHIVAM AGRAWAL
+ PRATYUSH SINHA
+(3 rows)
+
+db1=# update employee set empname=upper(empname);
+UPDATE 3
+db1=# select * from employee;
+  empid  |    empname     |  salary  
+---------+----------------+----------
+ 2000140 | SAURAV AGRAWAL | 1.28e+06
+ 2000120 | SHIVAM AGRAWAL | 1.28e+06
+ 2000110 | PRATYUSH SINHA | 1.28e+06
+(3 rows)
+
+db1=# update employee set lower(empname);
+ERROR:  syntax error at or near "("
+LINE 1: update employee set lower(empname);
+                                 ^
+db1=# select sum(salary) from employees;
+ERROR:  relation "employees" does not exist
+LINE 1: select sum(salary) from employees;
+                                ^
+db1=# select sum(salary) from employee;
+   sum    
+----------
+ 3.84e+06
+(1 row)
+
+db1=# select count(*) from employee;
+ count 
+-------
+     3
+(1 row)
+
+db1=# select integer(sum(salary)) from employee;
+ERROR:  syntax error at or near "("
+LINE 1: select integer(sum(salary)) from employee;
+                      ^
+db1=# select sum(salary), count(*)  from employee;
+   sum    | count 
+----------+-------
+ 3.84e+06 |     3
+(1 row)
+
+db1=# select sum(salary), count(*), avg(salary), min(empid), max(empid)  from employee;
+   sum    | count |   avg   |   min   |   max   
+----------+-------+---------+---------+---------
+ 3.84e+06 |     3 | 1280000 | 2000110 | 2000140
+(1 row)
+
+db1=# update employee set salary=int(salary);
+ERROR:  syntax error at or near "("
+LINE 1: update employee set salary=int(salary);
+                                      ^
+db1=# update employee set salary=int salary;
+ERROR:  syntax error at or near "salary"
+LINE 1: update employee set salary=int salary;
+                                       ^
+db1=# update employee set salary=(int) salary;
+ERROR:  syntax error at or near "salary"
+LINE 1: update employee set salary=(int) salary;
+                                         ^
+db1=# update employee set salary=cast(salary) as float;
+ERROR:  syntax error at or near ")"
+LINE 1: update employee set salary=cast(salary) as float;
+                                              ^
+db1=# select cast(sum(salary) as float), count(*), avg(salary), min(empid), max(empid)  from employee;
+   sum   | count |   avg   |   min   |   max   
+---------+-------+---------+---------+---------
+ 3840000 |     3 | 1280000 | 2000110 | 2000140
+(1 row)
+
+db1=# update employee set salary=0;
+UPDATE 3
+db1=# select * from employee;
+  empid  |    empname     | salary 
+---------+----------------+--------
+ 2000140 | SAURAV AGRAWAL |      0
+ 2000120 | SHIVAM AGRAWAL |      0
+ 2000110 | PRATYUSH SINHA |      0
+(3 rows)
+
+db1=# update employee set salary=nil;
+ERROR:  column "nil" does not exist
+LINE 1: update employee set salary=nil;
+                                   ^
+db1=# update employee set salary=nan;
+ERROR:  column "nan" does not exist
+LINE 1: update employee set salary=nan;
+                                   ^
+db1=# update employee set salary=;
+ERROR:  syntax error at or near ";"
+LINE 1: update employee set salary=;
+                                   ^
+db1=# update employee set salary: ;
+ERROR:  syntax error at or near ":"
+LINE 1: update employee set salary: ;
+                                  ^
+db1=# update employee set salary= ;
+ERROR:  syntax error at or near ";"
+LINE 1: update employee set salary= ;
+                                    ^
+db1=# update employee set salary= null;
+UPDATE 3
+db1=# select * from employee;
+  empid  |    empname     | salary 
+---------+----------------+--------
+ 2000140 | SAURAV AGRAWAL |       
+ 2000120 | SHIVAM AGRAWAL |       
+ 2000110 | PRATYUSH SINHA |       
+(3 rows)
+
+db1=# update employee set salary=128000 where empid>2000100;
+UPDATE 3
+db1=# select * from employee;
+  empid  |    empname     | salary 
+---------+----------------+--------
+ 2000140 | SAURAV AGRAWAL | 128000
+ 2000120 | SHIVAM AGRAWAL | 128000
+ 2000110 | PRATYUSH SINHA | 128000
+(3 rows)
+
+db1=# update employee set table employee(department text not null);
+ERROR:  syntax error at or near "table"
+LINE 1: update employee set table employee(department text not null)...
+                            ^
+db1=# update employee set table employee(department text not null)
+db1-# ;
+ERROR:  syntax error at or near "table"
+LINE 1: update employee set table employee(department text not null)
+                            ^
+db1=# update employee set employee(department text not null);
+ERROR:  syntax error at or near "("
+LINE 1: update employee set employee(department text not null);
+                                    ^
+db1=# alter table employee(department text not null);
+ERROR:  syntax error at or near "("
+LINE 1: alter table employee(department text not null);
+                            ^
+db1=# alter table employee add column(department text not null);
+ERROR:  syntax error at or near "("
+LINE 1: alter table employee add column(department text not null);
+                                       ^
+db1=# alter table employee add column department text not null;
+ERROR:  column "department" of relation "employee" contains null values
+db1=# select * from employee;
+  empid  |    empname     | salary 
+---------+----------------+--------
+ 2000140 | SAURAV AGRAWAL | 128000
+ 2000120 | SHIVAM AGRAWAL | 128000
+ 2000110 | PRATYUSH SINHA | 128000
+(3 rows)
+
+db1=# alter table employee add column department text;
+ALTER TABLE
+db1=# select * from employee;
+  empid  |    empname     | salary | department 
+---------+----------------+--------+------------
+ 2000140 | SAURAV AGRAWAL | 128000 | 
+ 2000120 | SHIVAM AGRAWAL | 128000 | 
+ 2000110 | PRATYUSH SINHA | 128000 | 
+(3 rows)
+
+db1=# update employee set department='Java Microservices';
+UPDATE 3
+db1=# select * from employee;
+  empid  |    empname     | salary |     department     
+---------+----------------+--------+--------------------
+ 2000140 | SAURAV AGRAWAL | 128000 | Java Microservices
+ 2000120 | SHIVAM AGRAWAL | 128000 | Java Microservices
+ 2000110 | PRATYUSH SINHA | 128000 | Java Microservices
+(3 rows)
+
+db1=# 

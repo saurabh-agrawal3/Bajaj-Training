@@ -1,0 +1,215 @@
+Last login: Fri Jan 13 12:22:00 on ttys000
+
+The default interactive shell is now zsh.
+To update your account to use zsh, please run `chsh -s /bin/zsh`.
+For more details, please visit https://support.apple.com/kb/HT208050.
+L-WF47KN2LRQ:~ saurabhagrawal3$ /Library/PostgreSQL/15/scripts/runpsql.sh; exit
+Server [localhost]: 
+Database [postgres]: 
+Port [5432]: 
+Username [postgres]: 
+Password for user postgres: 
+psql (15.1)
+Type "help" for help.
+
+postgres=# \list
+                                            List of databases
+   Name    |  Owner   | Encoding | Collate | Ctype | ICU Locale | Locale Provider |   Access privileges   
+-----------+----------+----------+---------+-------+------------+-----------------+-----------------------
+ postgres  | postgres | UTF8     | C       | C     |            | libc            | 
+ template0 | postgres | UTF8     | C       | C     |            | libc            | =c/postgres          +
+           |          |          |         |       |            |                 | postgres=CTc/postgres
+ template1 | postgres | UTF8     | C       | C     |            | libc            | =c/postgres          +
+           |          |          |         |       |            |                 | postgres=CTc/postgres
+(3 rows)
+
+postgres=# CREATE DATABASE DB1;
+CREATE DATABASE
+postgres=# \l
+                                            List of databases
+   Name    |  Owner   | Encoding | Collate | Ctype | ICU Locale | Locale Provider |   Access privileges   
+-----------+----------+----------+---------+-------+------------+-----------------+-----------------------
+ db1       | postgres | UTF8     | C       | C     |            | libc            | 
+ postgres  | postgres | UTF8     | C       | C     |            | libc            | 
+ template0 | postgres | UTF8     | C       | C     |            | libc            | =c/postgres          +
+           |          |          |         |       |            |                 | postgres=CTc/postgres
+ template1 | postgres | UTF8     | C       | C     |            | libc            | =c/postgres          +
+           |          |          |         |       |            |                 | postgres=CTc/postgres
+(4 rows)
+
+postgres=# \c db1
+You are now connected to database "db1" as user "postgres".
+db1=# \d
+Did not find any relations.
+db1=# CREATE TABLE EMPLOYEE(
+db1(# EMPID INT PRIMARY KEY NOT NULL,
+db1(# EMPNAME TEXT NOT NULL,
+db1(# SALARY REAL);
+CREATE TABLE
+db1=# \d
+          List of relations
+ Schema |   Name   | Type  |  Owner   
+--------+----------+-------+----------
+ public | employee | table | postgres
+(1 row)
+
+db1=# \d EMPLOYEE
+              Table "public.employee"
+ Column  |  Type   | Collation | Nullable | Default 
+---------+---------+-----------+----------+---------
+ empid   | integer |           | not null | 
+ empname | text    |           | not null | 
+ salary  | real    |           |          | 
+Indexes:
+    "employee_pkey" PRIMARY KEY, btree (empid)
+
+db1=# INSERT INTO EMPLOYEE(
+db1(# 2000140,
+db1(# SAURABH AGRAWAL,
+db1(# 1280000);
+ERROR:  syntax error at or near "2000140"
+LINE 2: 2000140,
+        ^
+db1=# INSERT INTO EMPLOYEE(
+EMPID: 2000140,
+SAURABH AGRAWAL,
+1280000);
+ERROR:  syntax error at or near ":"
+LINE 2: EMPID: 2000140,
+             ^
+db1=# INSERT INTO EMPLOYEE VALUES(
+2000140,
+SAURABH AGRAWAL,
+1280000);
+ERROR:  syntax error at or near "AGRAWAL"
+LINE 3: SAURABH AGRAWAL,
+                ^
+db1=# INSERT INTO EMPLOYEE VALUES(
+2000140,
+'SAURABH AGRAWAL',
+1280000);
+INSERT 0 1
+db1=# INSERT INTO EMPLOYEE VALUES(
+2000130,
+'SHIVAM AGRAWAL',
+1280000);
+INSERT 0 1
+db1=# SELECT * FROM EMPLOYEE
+db1-# 
+db1-# ;
+  empid  |     empname     |  salary  
+---------+-----------------+----------
+ 2000140 | SAURABH AGRAWAL | 1.28e+06
+ 2000130 | SHIVAM AGRAWAL  | 1.28e+06
+(2 rows)
+
+db1=# INSERT INTO EMPLOYEE VALUES(
+2000120,
+'AYUSHI SADANI',
+1280000),(2000110,'PRATYUSH SINHA',1280000);
+INSERT 0 2
+db1=# SELECT * FROM EMPLOYEE
+;
+  empid  |     empname     |  salary  
+---------+-----------------+----------
+ 2000140 | SAURABH AGRAWAL | 1.28e+06
+ 2000130 | SHIVAM AGRAWAL  | 1.28e+06
+ 2000120 | AYUSHI SADANI   | 1.28e+06
+ 2000110 | PRATYUSH SINHA  | 1.28e+06
+(4 rows)
+
+db1=# UPDATE EMPLOYEE SET EMPNAME='SAURAV AGRAWAL',SALARY=12800000 WHERE EMPID=2000140;
+UPDATE 1
+db1=# SELECT * FROM EMPLOYEE
+;
+  empid  |    empname     |  salary  
+---------+----------------+----------
+ 2000130 | SHIVAM AGRAWAL | 1.28e+06
+ 2000120 | AYUSHI SADANI  | 1.28e+06
+ 2000110 | PRATYUSH SINHA | 1.28e+06
+ 2000140 | SAURAV AGRAWAL | 1.28e+07
+(4 rows)
+
+db1=# DELETE FROM EMPLOYEE WHERE EMPID=2000120;
+DELETE 1
+db1=# SELECT * FROM EMPLOYEE
+;
+  empid  |    empname     |  salary  
+---------+----------------+----------
+ 2000130 | SHIVAM AGRAWAL | 1.28e+06
+ 2000110 | PRATYUSH SINHA | 1.28e+06
+ 2000140 | SAURAV AGRAWAL | 1.28e+07
+(3 rows)
+
+db1=# UPDATE EMPLOYEE SET SALARY=1280000 WHERE SALARY>1280000;
+UPDATE 1
+db1=# SELECT * FROM EMPLOYEE
+;
+  empid  |    empname     |  salary  
+---------+----------------+----------
+ 2000130 | SHIVAM AGRAWAL | 1.28e+06
+ 2000110 | PRATYUSH SINHA | 1.28e+06
+ 2000140 | SAURAV AGRAWAL | 1.28e+06
+(3 rows)
+
+db1=# DELETE FROM EMPLOYEE WHERE EMPID=2000130,2000110 ;
+ERROR:  syntax error at or near ","
+LINE 1: DELETE FROM EMPLOYEE WHERE EMPID=2000130,2000110 ;
+                                                ^
+db1=# DELETE FROM EMPLOYEE WHERE EMPID=(2000130),(2000110) ;
+ERROR:  syntax error at or near ","
+LINE 1: DELETE FROM EMPLOYEE WHERE EMPID=(2000130),(2000110) ;
+                                                  ^
+db1=# DELETE FROM EMPLOYEE WHERE EMPID:2000130, 2000110 ;
+ERROR:  syntax error at or near ":"
+LINE 1: DELETE FROM EMPLOYEE WHERE EMPID:2000130, 2000110 ;
+                                        ^
+db1=# DELETE FROM EMPLOYEE WHERE EMPID:2000130; 2000110 ;
+ERROR:  syntax error at or near ":"
+LINE 1: DELETE FROM EMPLOYEE WHERE EMPID:2000130;
+                                        ^
+ERROR:  syntax error at or near "2000110"
+LINE 1: 2000110 ;
+        ^
+db1=# DELETE FROM EMPLOYEE WHERE EMPID=2000130; 2000110 ;
+DELETE 1
+ERROR:  syntax error at or near "2000110"
+LINE 1: 2000110 ;
+        ^
+db1=# INSERT INTO EMPLOYEE VALUES(
+2000120,
+'AYUSHI SADANI',
+1280000),(2000110,'PRATYUSH SINHA',1280000);
+ERROR:  duplicate key value violates unique constraint "employee_pkey"
+DETAIL:  Key (empid)=(2000110) already exists.
+db1=# INSERT INTO EMPLOYEE VALUES(
+2000120,
+'AYUSHI SADANI',
+1280000),(200010,'PRATUSH SINHA',1280000);
+INSERT 0 2
+db1=# SELECT * FROM EMPLOYEE
+;
+  empid  |    empname     |  salary  
+---------+----------------+----------
+ 2000110 | PRATYUSH SINHA | 1.28e+06
+ 2000140 | SAURAV AGRAWAL | 1.28e+06
+ 2000120 | AYUSHI SADANI  | 1.28e+06
+  200010 | PRATUSH SINHA  | 1.28e+06
+(4 rows)
+
+db1=# DELETE FROM EMPLOYEE WHERE EMPID=2000130 = 2000110 ;
+ERROR:  syntax error at or near "="
+LINE 1: DELETE FROM EMPLOYEE WHERE EMPID=2000130 = 2000110 ;
+                                                 ^
+db1=# DELETE FROM EMPLOYEE WHERE EMPID IN (2000130 , 2000110) ;
+DELETE 1
+db1=# DELETE FROM EMPLOYEE WHERE EMPID IN (2000120 , 200010) ;
+DELETE 2
+db1=# SELECT * FROM EMPLOYEE
+;
+  empid  |    empname     |  salary  
+---------+----------------+----------
+ 2000140 | SAURAV AGRAWAL | 1.28e+06
+(1 row)
+
+db1=# 

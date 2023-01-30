@@ -1,0 +1,495 @@
+Last login: Mon Jan 16 10:31:52 on ttys000
+/Library/PostgreSQL/15/scripts/runpsql.sh; exit
+
+The default interactive shell is now zsh.
+To update your account to use zsh, please run `chsh -s /bin/zsh`.
+For more details, please visit https://support.apple.com/kb/HT208050.
+L-WF47KN2LRQ:~ saurabhagrawal3$ /Library/PostgreSQL/15/scripts/runpsql.sh; exit
+Server [localhost]: 
+Database [postgres]: 
+Port [5432]: 
+Username [postgres]: 
+Password for user postgres: 
+psql (15.1)
+Type "help" for help.
+
+postgres=# /c db1
+postgres-# \c db1
+You are now connected to database "db1" as user "postgres".
+db1-# select * from employee;
+ERROR:  syntax error at or near "/"
+LINE 1: /c db1
+        ^
+db1=# ;
+db1=# select * from employee;
+  empid  |    empname     | salary | depid |  position   
+---------+----------------+--------+-------+-------------
+ 2000140 | SAURAV AGRAWAL | 128000 |     1 | Byte intern
+ 2000120 | SHIVAM AGRAWAL | 128000 |     1 | Byte intern
+ 2000110 | PRATYUSH SINHA | 128000 |     3 | Byte intern
+(3 rows)
+
+db1=# select * from employee a full outer join department b on a.depid=b.depid;
+  empid  |    empname     | salary | depid |  position   | depid |      depname      
+---------+----------------+--------+-------+-------------+-------+-------------------
+ 2000140 | SAURAV AGRAWAL | 128000 |     1 | Byte intern |     1 | Java Microservice
+ 2000120 | SHIVAM AGRAWAL | 128000 |     1 | Byte intern |     1 | Java Microservice
+ 2000110 | PRATYUSH SINHA | 128000 |     3 | Byte intern |     3 | Python dev
+         |                |        |       |             |     2 | Angular
+(4 rows)
+
+db1=# select (empid,empname,salary,depname) from employee a full outer join department b on a.depid=b.depid;
+                          row                          
+-------------------------------------------------------
+ (2000140,"SAURAV AGRAWAL",128000,"Java Microservice")
+ (2000120,"SHIVAM AGRAWAL",128000,"Java Microservice")
+ (2000110,"PRATYUSH SINHA",128000,"Python dev")
+ (,,,Angular)
+(4 rows)
+
+db1=# select (empid,empname,salary,depname) from employee a left join department b on a.depid=b.depid;
+                          row                          
+-------------------------------------------------------
+ (2000140,"SAURAV AGRAWAL",128000,"Java Microservice")
+ (2000120,"SHIVAM AGRAWAL",128000,"Java Microservice")
+ (2000110,"PRATYUSH SINHA",128000,"Python dev")
+(3 rows)
+
+db1=# select (empid,empname,salary,depname) from employee a right join department b on a.depid=b.depid;
+                          row                          
+-------------------------------------------------------
+ (2000140,"SAURAV AGRAWAL",128000,"Java Microservice")
+ (2000120,"SHIVAM AGRAWAL",128000,"Java Microservice")
+ (2000110,"PRATYUSH SINHA",128000,"Python dev")
+ (,,,Angular)
+(4 rows)
+
+db1=# select * from employee a right join department b on a.depid=b.depid;
+  empid  |    empname     | salary | depid |  position   | depid |      depname      
+---------+----------------+--------+-------+-------------+-------+-------------------
+ 2000140 | SAURAV AGRAWAL | 128000 |     1 | Byte intern |     1 | Java Microservice
+ 2000120 | SHIVAM AGRAWAL | 128000 |     1 | Byte intern |     1 | Java Microservice
+ 2000110 | PRATYUSH SINHA | 128000 |     3 | Byte intern |     3 | Python dev
+         |                |        |       |             |     2 | Angular
+(4 rows)
+
+db1=# select * from employee a left join department b on a.depid=b.depid;
+  empid  |    empname     | salary | depid |  position   | depid |      depname      
+---------+----------------+--------+-------+-------------+-------+-------------------
+ 2000140 | SAURAV AGRAWAL | 128000 |     1 | Byte intern |     1 | Java Microservice
+ 2000120 | SHIVAM AGRAWAL | 128000 |     1 | Byte intern |     1 | Java Microservice
+ 2000110 | PRATYUSH SINHA | 128000 |     3 | Byte intern |     3 | Python dev
+(3 rows)
+
+db1=# insert into employee values (2000104, 'Rajeta', 1280000, null, 'Byte intern');
+INSERT 0 1
+db1=# select * from employee;
+  empid  |    empname     |  salary  | depid |  position   
+---------+----------------+----------+-------+-------------
+ 2000140 | SAURAV AGRAWAL |   128000 |     1 | Byte intern
+ 2000120 | SHIVAM AGRAWAL |   128000 |     1 | Byte intern
+ 2000110 | PRATYUSH SINHA |   128000 |     3 | Byte intern
+ 2000104 | Rajeta         | 1.28e+06 |       | Byte intern
+(4 rows)
+
+db1=# insert into employee values (2000105, 'Sumit', 1280000, null, 'Byte intern');
+INSERT 0 1
+db1=# select * from employee;
+  empid  |    empname     |  salary  | depid |  position   
+---------+----------------+----------+-------+-------------
+ 2000140 | SAURAV AGRAWAL |   128000 |     1 | Byte intern
+ 2000120 | SHIVAM AGRAWAL |   128000 |     1 | Byte intern
+ 2000110 | PRATYUSH SINHA |   128000 |     3 | Byte intern
+ 2000104 | Rajeta         | 1.28e+06 |       | Byte intern
+ 2000105 | Sumit          | 1.28e+06 |       | Byte intern
+(5 rows)
+
+db1=# insert into department values(4, Android);
+ERROR:  column "android" does not exist
+LINE 1: insert into department values(4, Android);
+                                         ^
+db1=# insert into department values(4, 'Android');
+INSERT 0 1
+db1=# select * from ;
+ERROR:  syntax error at or near ";"
+LINE 1: select * from ;
+                      ^
+db1=# select * from department;
+ depid |      depname      
+-------+-------------------
+     1 | Java Microservice
+     2 | Angular
+     3 | Python dev
+     4 | Android
+(4 rows)
+
+db1=# select * from employee a full outer join department b on a.depid=b.depid;
+  empid  |    empname     |  salary  | depid |  position   | depid |      depname      
+---------+----------------+----------+-------+-------------+-------+-------------------
+ 2000140 | SAURAV AGRAWAL |   128000 |     1 | Byte intern |     1 | Java Microservice
+ 2000120 | SHIVAM AGRAWAL |   128000 |     1 | Byte intern |     1 | Java Microservice
+ 2000110 | PRATYUSH SINHA |   128000 |     3 | Byte intern |     3 | Python dev
+ 2000104 | Rajeta         | 1.28e+06 |       | Byte intern |       | 
+ 2000105 | Sumit          | 1.28e+06 |       | Byte intern |       | 
+         |                |          |       |             |     2 | Angular
+         |                |          |       |             |     4 | Android
+(7 rows)
+
+db1=# select * from employee a inner join department b on a.depid=b.depid;
+  empid  |    empname     | salary | depid |  position   | depid |      depname      
+---------+----------------+--------+-------+-------------+-------+-------------------
+ 2000140 | SAURAV AGRAWAL | 128000 |     1 | Byte intern |     1 | Java Microservice
+ 2000120 | SHIVAM AGRAWAL | 128000 |     1 | Byte intern |     1 | Java Microservice
+ 2000110 | PRATYUSH SINHA | 128000 |     3 | Byte intern |     3 | Python dev
+(3 rows)
+
+db1=# select * from employee a right join department b on a.depid=b.depid;
+  empid  |    empname     | salary | depid |  position   | depid |      depname      
+---------+----------------+--------+-------+-------------+-------+-------------------
+ 2000140 | SAURAV AGRAWAL | 128000 |     1 | Byte intern |     1 | Java Microservice
+ 2000120 | SHIVAM AGRAWAL | 128000 |     1 | Byte intern |     1 | Java Microservice
+ 2000110 | PRATYUSH SINHA | 128000 |     3 | Byte intern |     3 | Python dev
+         |                |        |       |             |     2 | Angular
+         |                |        |       |             |     4 | Android
+(5 rows)
+
+db1=# select * from employee a left join department b on a.depid=b.depid;
+  empid  |    empname     |  salary  | depid |  position   | depid |      depname      
+---------+----------------+----------+-------+-------------+-------+-------------------
+ 2000140 | SAURAV AGRAWAL |   128000 |     1 | Byte intern |     1 | Java Microservice
+ 2000120 | SHIVAM AGRAWAL |   128000 |     1 | Byte intern |     1 | Java Microservice
+ 2000110 | PRATYUSH SINHA |   128000 |     3 | Byte intern |     3 | Python dev
+ 2000104 | Rajeta         | 1.28e+06 |       | Byte intern |       | 
+ 2000105 | Sumit          | 1.28e+06 |       | Byte intern |       | 
+(5 rows)
+
+db1=# select a.empname as Employee names1, b.empname as Employee names2 from employee a, employee b where a.empid<>b.empid order by a.empid;
+ERROR:  syntax error at or near "names1"
+LINE 1: select a.empname as Employee names1, b.empname as Employee n...
+                                     ^
+db1=# select a.empname as Employee_names1, b.empname as Employee_names2 from employee a, employee b where a.empid<>b.empid order by a.empid;
+ employee_names1 | employee_names2 
+-----------------+-----------------
+ Rajeta          | SAURAV AGRAWAL
+ Rajeta          | SHIVAM AGRAWAL
+ Rajeta          | PRATYUSH SINHA
+ Rajeta          | Sumit
+ Sumit           | SAURAV AGRAWAL
+ Sumit           | SHIVAM AGRAWAL
+ Sumit           | PRATYUSH SINHA
+ Sumit           | Rajeta
+ PRATYUSH SINHA  | SAURAV AGRAWAL
+ PRATYUSH SINHA  | SHIVAM AGRAWAL
+ PRATYUSH SINHA  | Rajeta
+ PRATYUSH SINHA  | Sumit
+ SHIVAM AGRAWAL  | SAURAV AGRAWAL
+ SHIVAM AGRAWAL  | PRATYUSH SINHA
+ SHIVAM AGRAWAL  | Rajeta
+ SHIVAM AGRAWAL  | Sumit
+ SAURAV AGRAWAL  | SHIVAM AGRAWAL
+ SAURAV AGRAWAL  | PRATYUSH SINHA
+ SAURAV AGRAWAL  | Rajeta
+ SAURAV AGRAWAL  | Sumit
+(20 rows)
+
+db1=# select a.empname as Employee_names1, b.empname as Employee_names2 from employee a, employee b where a.empid<>b.empid;
+ employee_names1 | employee_names2 
+-----------------+-----------------
+ SAURAV AGRAWAL  | SHIVAM AGRAWAL
+ SAURAV AGRAWAL  | PRATYUSH SINHA
+ SAURAV AGRAWAL  | Rajeta
+ SAURAV AGRAWAL  | Sumit
+ SHIVAM AGRAWAL  | SAURAV AGRAWAL
+ SHIVAM AGRAWAL  | PRATYUSH SINHA
+ SHIVAM AGRAWAL  | Rajeta
+ SHIVAM AGRAWAL  | Sumit
+ PRATYUSH SINHA  | SAURAV AGRAWAL
+ PRATYUSH SINHA  | SHIVAM AGRAWAL
+ PRATYUSH SINHA  | Rajeta
+ PRATYUSH SINHA  | Sumit
+ Rajeta          | SAURAV AGRAWAL
+ Rajeta          | SHIVAM AGRAWAL
+ Rajeta          | PRATYUSH SINHA
+ Rajeta          | Sumit
+ Sumit           | SAURAV AGRAWAL
+ Sumit           | SHIVAM AGRAWAL
+ Sumit           | PRATYUSH SINHA
+ Sumit           | Rajeta
+(20 rows)
+
+db1=# select a.empname as Employee_names1, b.empname as Employee_names2 from employee a, employee b where a.empid<>b.empid order by b.empid;
+ employee_names1 | employee_names2 
+-----------------+-----------------
+ SAURAV AGRAWAL  | Rajeta
+ SHIVAM AGRAWAL  | Rajeta
+ PRATYUSH SINHA  | Rajeta
+ Sumit           | Rajeta
+ SAURAV AGRAWAL  | Sumit
+ SHIVAM AGRAWAL  | Sumit
+ PRATYUSH SINHA  | Sumit
+ Rajeta          | Sumit
+ SAURAV AGRAWAL  | PRATYUSH SINHA
+ SHIVAM AGRAWAL  | PRATYUSH SINHA
+ Rajeta          | PRATYUSH SINHA
+ Sumit           | PRATYUSH SINHA
+ SAURAV AGRAWAL  | SHIVAM AGRAWAL
+ PRATYUSH SINHA  | SHIVAM AGRAWAL
+ Rajeta          | SHIVAM AGRAWAL
+ Sumit           | SHIVAM AGRAWAL
+ SHIVAM AGRAWAL  | SAURAV AGRAWAL
+ PRATYUSH SINHA  | SAURAV AGRAWAL
+ Rajeta          | SAURAV AGRAWAL
+ Sumit           | SAURAV AGRAWAL
+(20 rows)
+
+db1=# select empname, empid, salary from employee where salary>(select avg(salary) from employee);
+ empname |  empid  |  salary  
+---------+---------+----------
+ Rajeta  | 2000104 | 1.28e+06
+ Sumit   | 2000105 | 1.28e+06
+(2 rows)
+
+db1=# delete from employee where empid=2000140;
+DELETE 1
+db1=# select * from employee;
+  empid  |    empname     |  salary  | depid |  position   
+---------+----------------+----------+-------+-------------
+ 2000120 | SHIVAM AGRAWAL |   128000 |     1 | Byte intern
+ 2000110 | PRATYUSH SINHA |   128000 |     3 | Byte intern
+ 2000104 | Rajeta         | 1.28e+06 |       | Byte intern
+ 2000105 | Sumit          | 1.28e+06 |       | Byte intern
+(4 rows)
+
+db1=# rollback;
+WARNING:  there is no transaction in progress
+ROLLBACK
+db1=# select * from employee;
+  empid  |    empname     |  salary  | depid |  position   
+---------+----------------+----------+-------+-------------
+ 2000120 | SHIVAM AGRAWAL |   128000 |     1 | Byte intern
+ 2000110 | PRATYUSH SINHA |   128000 |     3 | Byte intern
+ 2000104 | Rajeta         | 1.28e+06 |       | Byte intern
+ 2000105 | Sumit          | 1.28e+06 |       | Byte intern
+(4 rows)
+
+db1=# insert into employee values(2000140,'Saurabh Agrawal',1280000,1,'Byte Intern');
+INSERT 0 1
+db1=# select * from employee;
+  empid  |     empname     |  salary  | depid |  position   
+---------+-----------------+----------+-------+-------------
+ 2000120 | SHIVAM AGRAWAL  |   128000 |     1 | Byte intern
+ 2000110 | PRATYUSH SINHA  |   128000 |     3 | Byte intern
+ 2000104 | Rajeta          | 1.28e+06 |       | Byte intern
+ 2000105 | Sumit           | 1.28e+06 |       | Byte intern
+ 2000140 | Saurabh Agrawal | 1.28e+06 |     1 | Byte Intern
+(5 rows)
+
+db1=# begin;
+BEGIN
+db1=*# delete from employee where empid=2000140;
+DELETE 1
+db1=*# select * from employee;
+  empid  |    empname     |  salary  | depid |  position   
+---------+----------------+----------+-------+-------------
+ 2000120 | SHIVAM AGRAWAL |   128000 |     1 | Byte intern
+ 2000110 | PRATYUSH SINHA |   128000 |     3 | Byte intern
+ 2000104 | Rajeta         | 1.28e+06 |       | Byte intern
+ 2000105 | Sumit          | 1.28e+06 |       | Byte intern
+(4 rows)
+
+db1=*# rollback;
+ROLLBACK
+db1=# select * from employee;
+  empid  |     empname     |  salary  | depid |  position   
+---------+-----------------+----------+-------+-------------
+ 2000120 | SHIVAM AGRAWAL  |   128000 |     1 | Byte intern
+ 2000110 | PRATYUSH SINHA  |   128000 |     3 | Byte intern
+ 2000104 | Rajeta          | 1.28e+06 |       | Byte intern
+ 2000105 | Sumit           | 1.28e+06 |       | Byte intern
+ 2000140 | Saurabh Agrawal | 1.28e+06 |     1 | Byte Intern
+(5 rows)
+
+db1=# commit
+db1-# ;
+WARNING:  there is no transaction in progress
+COMMIT
+db1=# end transaction;
+WARNING:  there is no transaction in progress
+COMMIT
+db1=# create index enameidx on employee(empname);
+CREATE INDEX
+db1=# explain select * from employee;
+                       QUERY PLAN                        
+---------------------------------------------------------
+ Seq Scan on employee  (cost=0.00..1.05 rows=5 width=76)
+(1 row)
+
+db1=# alter table employee drop enameidx;
+ERROR:  column "enameidx" of relation "employee" does not exist
+db1=# alter table employee drop index enameidx;
+ERROR:  syntax error at or near "enameidx"
+LINE 1: alter table employee drop index enameidx;
+                                        ^
+db1=# drop index employee.enameidx;
+ERROR:  schema "employee" does not exist
+db1=# drop index enameidx;
+DROP INDEX
+db1=# explain select * from employee;
+                       QUERY PLAN                        
+---------------------------------------------------------
+ Seq Scan on employee  (cost=0.00..1.05 rows=5 width=76)
+(1 row)
+
+db1=# create view empview as select empid, empname from employee;
+CREATE VIEW
+db1=# select * from empview;
+  empid  |     empname     
+---------+-----------------
+ 2000120 | SHIVAM AGRAWAL
+ 2000110 | PRATYUSH SINHA
+ 2000104 | Rajeta
+ 2000105 | Sumit
+ 2000140 | Saurabh Agrawal
+(5 rows)
+
+db1=# drop view empview;
+DROP VIEW
+db1=# alter employee add column phnum int[];
+ERROR:  syntax error at or near "employee"
+LINE 1: alter employee add column phnum int[];
+              ^
+db1=# alter table employee add column phnum int[];
+ALTER TABLE
+db1=# update employee set phnum[0]=7870019379 where eid=2000140;
+ERROR:  column "eid" does not exist
+LINE 1: update employee set phnum[0]=7870019379 where eid=2000140;
+                                                      ^
+db1=# update employee set phnum[0]=7870019379 where empid=2000140;
+ERROR:  integer out of range
+db1=# alter table employee drop column phnum int[];
+ERROR:  syntax error at or near "int"
+LINE 1: alter table employee drop column phnum int[];
+                                               ^
+db1=# alter table employee drop column phnum;
+ALTER TABLE
+db1=# alter table employee add column phnum text[];
+ALTER TABLE
+db1=# update employee set phnum[0]=7870019379 where empid=2000140;
+UPDATE 1
+db1=# update employee set phnum[1]=8102576478 where empid=2000140;
+UPDATE 1
+db1=# select * from employee;
+  empid  |     empname     |  salary  | depid |  position   |             phnum             
+---------+-----------------+----------+-------+-------------+-------------------------------
+ 2000120 | SHIVAM AGRAWAL  |   128000 |     1 | Byte intern | 
+ 2000110 | PRATYUSH SINHA  |   128000 |     3 | Byte intern | 
+ 2000104 | Rajeta          | 1.28e+06 |       | Byte intern | 
+ 2000105 | Sumit           | 1.28e+06 |       | Byte intern | 
+ 2000140 | Saurabh Agrawal | 1.28e+06 |     1 | Byte Intern | [0:1]={7870019379,8102576478}
+(5 rows)
+
+db1=# update employee set phnum[]={9999999999,8888888888} where empid=2000104;
+ERROR:  syntax error at or near "]"
+LINE 1: update employee set phnum[]={9999999999,8888888888} where em...
+                                  ^
+db1=# update employee set phnum={9999999999,8888888888} where empid=2000104;
+ERROR:  syntax error at or near "{"
+LINE 1: update employee set phnum={9999999999,8888888888} where empi...
+                                  ^
+db1=# update employee set phnum=(9999999999,8888888888) where empid=2000104;
+ERROR:  column "phnum" is of type text[] but expression is of type record
+LINE 1: update employee set phnum=(9999999999,8888888888) where empi...
+                                  ^
+HINT:  You will need to rewrite or cast the expression.
+db1=# update employee set phnum=['9999999999','8888888888'] where empid=2000104;
+ERROR:  syntax error at or near "["
+LINE 1: update employee set phnum=['9999999999','8888888888'] where ...
+                                  ^
+db1=# update employee set phnum={'9999999999','8888888888'} where empid=2000104;
+ERROR:  syntax error at or near "{"
+LINE 1: update employee set phnum={'9999999999','8888888888'} where ...
+                                  ^
+db1=# update employee set phnum=('9999999999','8888888888') where empid=2000104;
+ERROR:  column "phnum" is of type text[] but expression is of type record
+LINE 1: update employee set phnum=('9999999999','8888888888') where ...
+                                  ^
+HINT:  You will need to rewrite or cast the expression.
+db1=# update employee set phnum='{9999999999,8888888888}' where empid=2000104;
+UPDATE 1
+db1=# select * from employee;
+  empid  |     empname     |  salary  | depid |  position   |             phnum             
+---------+-----------------+----------+-------+-------------+-------------------------------
+ 2000120 | SHIVAM AGRAWAL  |   128000 |     1 | Byte intern | 
+ 2000110 | PRATYUSH SINHA  |   128000 |     3 | Byte intern | 
+ 2000105 | Sumit           | 1.28e+06 |       | Byte intern | 
+ 2000140 | Saurabh Agrawal | 1.28e+06 |     1 | Byte Intern | [0:1]={7870019379,8102576478}
+ 2000104 | Rajeta          | 1.28e+06 |       | Byte intern | {9999999999,8888888888}
+(5 rows)
+
+db1=# update employee set phnum='{7870019379,8102576478}' where empid=2000140;
+UPDATE 1
+db1=# select phnum[0] from employee where empid=2000104;
+ phnum 
+-------
+ 
+(1 row)
+
+db1=# update employee set phnum[0]=7870019379 where empid=2000140;
+UPDATE 1
+db1=# update employee set phnum[1]=8102576478 where empid=2000140;
+UPDATE 1
+db1=# select phnum[0] from employee where empid=2000140;
+   phnum    
+------------
+ 7870019379
+(1 row)
+
+db1=# select phnum from employee where empid=2000140;
+                  phnum                   
+------------------------------------------
+ [0:2]={7870019379,8102576478,8102576478}
+(1 row)
+
+db1=# select phnum[1] from employee where empid=2000140;
+   phnum    
+------------
+ 8102576478
+(1 row)
+
+db1=# select phnum from employee where empid=2000104;
+          phnum          
+-------------------------
+ {9999999999,8888888888}
+(1 row)
+
+db1=# select phnum[1] from employee where empid=2000104;
+   phnum    
+------------
+ 9999999999
+(1 row)
+
+db1=# select phnum[2] from employee where empid=2000104;
+   phnum    
+------------
+ 8888888888
+(1 row)
+
+db1=# update employee set phnum='{7870019379,8102576478}' where empid=2000140;
+UPDATE 1
+db1=# select * from employee;
+  empid  |     empname     |  salary  | depid |  position   |          phnum          
+---------+-----------------+----------+-------+-------------+-------------------------
+ 2000120 | SHIVAM AGRAWAL  |   128000 |     1 | Byte intern | 
+ 2000110 | PRATYUSH SINHA  |   128000 |     3 | Byte intern | 
+ 2000105 | Sumit           | 1.28e+06 |       | Byte intern | 
+ 2000104 | Rajeta          | 1.28e+06 |       | Byte intern | {9999999999,8888888888}
+ 2000140 | Saurabh Agrawal | 1.28e+06 |     1 | Byte Intern | {7870019379,8102576478}
+(5 rows)
+
+db1=# select phnum[2] from employee where empid=2000140;
+   phnum    
+------------
+ 8102576478
+(1 row)
+
+db1=# 
